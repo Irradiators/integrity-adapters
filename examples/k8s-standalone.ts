@@ -3,6 +3,7 @@
 // Usage: npx tsx examples/k8s-standalone.ts
 // Requires: K8S_API_URL, K8S_SERVICE_ACCOUNT_TOKEN, K8S_NAMESPACES in .env
 
+import 'dotenv/config';
 import { runScoringEngine, type PaddedStreamNode } from '../src/lib/index';
 import { resolveCell, type K8sSignal } from '../adapters/k8s/mapping';
 import { cellMaskedValue } from '../adapters/k8s/f_norm';
@@ -43,7 +44,6 @@ async function main() {
   }
 
   // Metrics
-  // NOTE: Assumes 1 core / 1 GiB per pod. For accurate ratios, join with pod spec limits.
   for (const ns of namespaces) {
     const res = await fetch(`${process.env.K8S_API_URL}/apis/metrics.k8s.io/v1beta1/namespaces/${ns}/pods`, { headers });
     if (!res.ok) continue;
@@ -81,14 +81,14 @@ async function main() {
     }
   }
 
-  const result = runScoringEngine(paddedStream, [0, 0, 0], undefined, undefined, undefined);
+  const result = runScoringEngine(now, paddedStream, [0, 0, 0]);
 
   console.log('\n── RESULTS ──');
-  console.log(`Metric A (Compliance): ${(result.metric_a_compliance * 100).toFixed(1)}%`);
-  console.log(`Metric B (Integrity):  ${(result.metric_b_integrity * 100).toFixed(1)}%`);
+  console.log(`Metric A (Compliance): ${(result.metricACompliance * 100).toFixed(1)}%`);
+  console.log(`Metric B (Integrity):  ${(result.metricBIntegrity * 100).toFixed(1)}%`);
   console.log(`Status:                ${result.status}`);
-  console.log(`Watermelon Index:      ${(result.watermelon_index * 100).toFixed(1)}%`);
-  console.log(`Honest Failure:        ${(result.honest_failure_index * 100).toFixed(1)}%`);
+  console.log(`Watermelon Index:      ${(result.watermelonIndex * 100).toFixed(1)}%`);
+  console.log(`Honest Failure:        ${(result.honestFailureIndex * 100).toFixed(1)}%`);
 }
 
 main().catch(console.error);   

@@ -3,6 +3,7 @@
 // Usage: npx tsx examples/keycloak-standalone.ts
 // Requires: KEYCLOAK_URL, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET in .env
 
+import 'dotenv/config';
 import { runScoringEngine, type PaddedStreamNode } from '../src/lib/index';
 import { resolveCell, type KeycloakEvent } from '../adapters/keycloak/mapping';
 import { cellMaskedValue } from '../adapters/keycloak/f_norm';
@@ -53,14 +54,14 @@ async function main() {
     }
   }
 
-  const result = runScoringEngine(paddedStream, [0, 0, 0], undefined, undefined, undefined);
+  const result = runScoringEngine(now, paddedStream, [0, 0, 0]);
 
   console.log('\n── RESULTS ──');
-  console.log(`Metric A (Compliance): ${(result.metric_a_compliance * 100).toFixed(1)}%`);
-  console.log(`Metric B (Integrity):  ${(result.metric_b_integrity * 100).toFixed(1)}%`);
+  console.log(`Metric A (Compliance): ${(result.metricACompliance * 100).toFixed(1)}%`);
+  console.log(`Metric B (Integrity):  ${(result.metricBIntegrity * 100).toFixed(1)}%`);
   console.log(`Status:                ${result.status}`);
-  console.log(`Watermelon Index:      ${(result.watermelon_index * 100).toFixed(1)}%`);
-  console.log(`Honest Failure:        ${(result.honest_failure_index * 100).toFixed(1)}%`);
+  console.log(`Watermelon Index:      ${(result.watermelonIndex * 100).toFixed(1)}%`);
+  console.log(`Honest Failure:        ${(result.honestFailureIndex * 100).toFixed(1)}%`);
 }
 
 main().catch(console.error);   
